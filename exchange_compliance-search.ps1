@@ -20,7 +20,7 @@ $session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri ht
 Import-PSSession $session -AllowClobber -DisableNameChecking 
 
 # Create a search query  (-Name & -Description will show up in the 0365 compliance center search results)
-New-ComplianceSearch -Name $newSearchName -Description $newSearchDescription -ExchangeLocation 'All' -ContentMatchQuery '(c:c)(sent>$SearchEmailDate)(from=$SearchSenderEmail)'
+New-ComplianceSearch -Name $newSearchName -Description $newSearchDescription -ExchangeLocation 'All' -ContentMatchQuery '(c:c)(sent>$($SearchEmailDate))(from=$($SearchSenderEmail))'
 # Start Search
 Start-ComplianceSearch -Identity $newSearchName
 
