@@ -3,10 +3,10 @@
 
 
 # Search and Purch Variable Setup
-$newSearchName = 'PhishingEmail-060420'
-$newSearchDescription = 'Searching phishing email investigation'
-$SearchSenderEmail = 'badguy@bg.net'
-$SearchEmailDate = '2020-06-04'
+$newSearchName = "<serachName>"
+$newSearchDescription = "<description>"
+$SearchSenderEmail = "<senderEmail>"
+$SearchEmailDate = "<DateOrDateRange>"  # ex: 2020-08-20..2020-08-20"
 
 
 # Create credential object
@@ -20,7 +20,7 @@ $session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri ht
 Import-PSSession $session -AllowClobber -DisableNameChecking 
 
 # Create a search query  (-Name & -Description will show up in the 0365 compliance center search results)
-New-ComplianceSearch -Name $newSearchName -Description $newSearchDescription -ExchangeLocation 'All' -ContentMatchQuery '(c:c)(sent>$($SearchEmailDate))(from=$($SearchSenderEmail))'
+New-ComplianceSearch -Name $newSearchName -Description $newSearchDescription -ExchangeLocation 'All' -ContentMatchQuery "(c:c)(date=$($SearchEmailDate))(from=$($SearchSenderEmail))"
 # Start Search
 Start-ComplianceSearch -Identity $newSearchName
 
@@ -34,13 +34,14 @@ Get-ComplianceSearch -Identity $newSearchName | Format-List -Property Items
 
 #Preview the results
 New-ComplianceSearchAction -SearchName $newSearchName -Preview
+
 Get-ComplianceSearchAction -Identity $newSearchName'_Preview' | Select-Object -Property Results
  
 # Just to export results to a file
 Get-ComplianceSearchAction -Identity $newSearchName'_Preview' | Format-List -Property Results | Out-File  c:\$newSearchName.txt
 
 # Purge the Emails (softDelete or hardDelete)
-New-ComplianceSearchAction -SearchName $newSearchName  -Purge -PurgeType SoftDelete
+New-ComplianceSearchAction -SearchName $newSearchName  -Purge -PurgeType HardDelete
 Get-ComplianceSearchAction -Identity $newSearchName'_Purge'
 
 # Exports purge results to a file
